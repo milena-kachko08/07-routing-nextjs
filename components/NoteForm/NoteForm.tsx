@@ -43,7 +43,7 @@ const NoteForm = ({ onCancel, onSubmit }: NoteFormProps) => {
         mutate(values, {
           onSuccess: () => {
             resetForm();
-            onSubmit?.(); // вызываем внешний колбэк, если он есть
+            onSubmit?.(); 
           },
         });
       }}

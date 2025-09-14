@@ -19,6 +19,7 @@ export interface FetchNotesParams {
   page?: number;
   perPage?: number;
   search?: string;
+  tag?: NoteTag;
 }
 
 export interface FetchNotesResponse {
@@ -37,9 +38,12 @@ export const fetchNotes = async ({
   page = 1,
   perPage = 12,
   search = "",
+  tag,
 }: FetchNotesParams = {}): Promise<FetchNotesResponse> => {
   const params: Record<string, string | number> = { page, perPage };
+
   if (search.trim()) params.search = search;
+  if (tag) params.tag = tag;
 
   const { data } = await api.get<FetchNotesResponse>("/", {
     params,
@@ -69,12 +73,26 @@ export const deleteNote = async (id: string): Promise<Note> => {
   return data;
 };
 
+export async function getSingleNote(id: string): Promise<Note> {
+  const url = new URL(`${BASE_URL}/${id}`);
+
+  const headers = {
+    Accept: "application/json",
+    Authorization: `Bearer ${TOKEN}`,
+  };
+
+  const res = await axios.get<Note>(url.toString(), { headers });
+
+  return res.data;
+}
+
 // ==== Export as service ====
 const noteService = {
   fetchNotes,
   fetchNoteById,
   createNote,
   deleteNote,
+  getSingleNote,
 };
 
 export default noteService;

@@ -1,11 +1,26 @@
+export type Tag = "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
+
+export const tagOptions: Tag[] = [
+  "Todo",
+  "Work",
+  "Personal",
+  "Meeting",
+  "Shopping",
+];
+
 export interface Note {
   id: string;
   title: string;
   content: string;
-  tag: NoteTag;
+  tag: Tag;
   createdAt: string;
   updatedAt: string;
 }
 
-export type NoteTag = "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
-export type CreateNoteParams = Omit<Note, "id" | "createdAt" | "updatedAt">;
+export interface NewNote {
+  title: string;
+  content: string;
+  tag: Tag;
+}
+
+export type NoteTag = Note["tag"];
