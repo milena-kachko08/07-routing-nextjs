@@ -14,15 +14,9 @@ import Pagination from "@/components/Pagination/Pagination";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Modal from "@/components/Modal/Modal";
 import NoteForm from "@/components/NoteForm/NoteForm";
-import { Note } from "@/types/note";
 import css from "./NotePage.module.css";
 
-interface NotesProps {
-  initialNotes: Note[];
-  initialTotalPages: number;
-}
-
-export default function Notes({ initialNotes, initialTotalPages }: NotesProps) {
+export default function Notes() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
@@ -39,10 +33,6 @@ export default function Notes({ initialNotes, initialTotalPages }: NotesProps) {
         search: debouncedSearchTerm,
       }),
     placeholderData: keepPreviousData,
-    initialData: {
-      notes: initialNotes,
-      totalPages: initialTotalPages,
-    },
   });
 
   const handlePageChange = (selectedItem: { selected: number }) => {
@@ -54,13 +44,8 @@ export default function Notes({ initialNotes, initialTotalPages }: NotesProps) {
     setCurrentPage(1);
   };
 
-  const handleCreateNote = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleCreateNote = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   const handleNoteCreated = () => {
     queryClient.invalidateQueries({ queryKey: ["notes"] });
