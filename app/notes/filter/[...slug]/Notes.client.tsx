@@ -14,9 +14,15 @@ import Pagination from "@/components/Pagination/Pagination";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Modal from "@/components/Modal/Modal";
 import NoteForm from "@/components/NoteForm/NoteForm";
+import type { NoteTag } from "@/types/note";
 import css from "./NotePage.module.css";
 
-export default function Notes() {
+// ===== Типізація пропсів =====
+interface NotesProps {
+  initialTag: NoteTag | "";
+}
+
+export default function Notes({ initialTag }: NotesProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
@@ -24,17 +30,20 @@ export default function Notes() {
 
   const queryClient = useQueryClient();
 
+  // ===== Завантаження нотаток з фільтром за тегом =====
   const { data, isLoading, error } = useQuery({
-    queryKey: ["notes", debouncedSearchTerm, currentPage],
+    queryKey: ["notes", initialTag, debouncedSearchTerm, currentPage],
     queryFn: () =>
       fetchNotes({
         page: currentPage,
         perPage: 12,
         search: debouncedSearchTerm,
+        tag: initialTag || undefined, // якщо тег пустий, не передаємо його
       }),
     placeholderData: keepPreviousData,
   });
 
+  // ===== Обробники =====
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
@@ -52,9 +61,11 @@ export default function Notes() {
     setIsModalOpen(false);
   };
 
+  // ===== Дані для рендеру =====
   const notes = data?.notes || [];
   const totalPages = data?.totalPages || 0;
 
+  // ===== Рендер помилки =====
   if (error) {
     return (
       <div className={css.error}>
@@ -63,6 +74,7 @@ export default function Notes() {
     );
   }
 
+  // ===== Основний рендер =====
   return (
     <div className={css.container}>
       <div className={css.toolbar}>
@@ -80,6 +92,8 @@ export default function Notes() {
         <div className={css.empty}>
           {searchTerm
             ? "No notes found for your search."
+            : initialTag
+            ? `No notes found for tag "${initialTag}".`
             : "No notes yet. Create your first note!"}
         </div>
       )}

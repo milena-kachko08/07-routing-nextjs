@@ -34,6 +34,8 @@ export interface CreateNoteDto {
 }
 
 // ==== API Methods ====
+
+// Отримання всіх нотаток
 export const fetchNotes = async ({
   page = 1,
   perPage = 12,
@@ -52,6 +54,7 @@ export const fetchNotes = async ({
   return data;
 };
 
+// Отримання нотатки за ID (залишаємо лише одну функцію)
 export const fetchNoteById = async (id: string | number): Promise<Note> => {
   const { data } = await api.get<Note>(`/${id}`, {
     headers: getAuthHeader(),
@@ -59,6 +62,7 @@ export const fetchNoteById = async (id: string | number): Promise<Note> => {
   return data;
 };
 
+// Створення нової нотатки
 export const createNote = async (note: CreateNoteDto): Promise<Note> => {
   const { data } = await api.post<Note>("/", note, {
     headers: getAuthHeader(),
@@ -66,6 +70,7 @@ export const createNote = async (note: CreateNoteDto): Promise<Note> => {
   return data;
 };
 
+// Видалення нотатки за ID
 export const deleteNote = async (id: string): Promise<Note> => {
   const { data } = await api.delete<Note>(`/${id}`, {
     headers: getAuthHeader(),
@@ -73,26 +78,12 @@ export const deleteNote = async (id: string): Promise<Note> => {
   return data;
 };
 
-export async function getSingleNote(id: string): Promise<Note> {
-  const url = new URL(`${BASE_URL}/${id}`);
-
-  const headers = {
-    Accept: "application/json",
-    Authorization: `Bearer ${TOKEN}`,
-  };
-
-  const res = await axios.get<Note>(url.toString(), { headers });
-
-  return res.data;
-}
-
 // ==== Export as service ====
 const noteService = {
   fetchNotes,
   fetchNoteById,
   createNote,
   deleteNote,
-  getSingleNote,
 };
 
 export default noteService;
