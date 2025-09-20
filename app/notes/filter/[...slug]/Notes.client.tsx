@@ -14,12 +14,12 @@ import Pagination from "@/components/Pagination/Pagination";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Modal from "@/components/Modal/Modal";
 import NoteForm from "@/components/NoteForm/NoteForm";
-import type { NoteTag } from "@/types/note";
+import type { Tag } from "@/types/note";
 import css from "./NotePage.module.css";
 
 // ===== Типізація пропсів =====
 interface NotesProps {
-  initialTag: NoteTag | "";
+  initialTag:Tag | undefined;
 }
 
 export default function Notes({ initialTag }: NotesProps) {
